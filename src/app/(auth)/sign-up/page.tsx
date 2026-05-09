@@ -119,7 +119,7 @@ function SignUpForm() {
 
     // Redirect based on role
     if (userType === "SITTER") {
-      router.push("/apply")
+      router.push("/sitter/apply")
     } else {
       router.push("/onboarding")
     }
@@ -186,11 +186,11 @@ function SignUpForm() {
                 id="otp"
                 type="text"
                 inputMode="numeric"
-                pattern="[0-9]{6}"
-                maxLength={6}
-                placeholder="123456"
+                pattern="[0-9]{6,8}"
+                maxLength={8}
+                placeholder="06832475"
                 value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 8))}
                 required
                 autoComplete="one-time-code"
                 autoFocus
