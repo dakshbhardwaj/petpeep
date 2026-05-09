@@ -1,10 +1,11 @@
 "use client"
 // Needs "use client" — manages multi-step form state
 
-import { useState, Suspense } from "react"
+import { useState, useRef, Suspense } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import type { SupabaseClient } from "@supabase/supabase-js"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -28,7 +29,12 @@ export default function SignUpPage() {
 function SignUpForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const supabase = createClient()
+  // Lazy-init: avoids createBrowserClient running at build/SSR time
+  const supabaseRef = useRef<SupabaseClient | null>(null)
+  function getSupabase() {
+    if (!supabaseRef.current) supabaseRef.current = createClient()
+    return supabaseRef.current
+  }
 
   // Pre-select user type from URL param: /sign-up?type=sitter
   const initialType = searchParams.get("type") === "sitter" ? "SITTER" : null
@@ -47,7 +53,7 @@ function SignUpForm() {
     setError(null)
     setIsLoading(true)
 
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error } = await getSupabase().auth.signInWithOtp({
       email: email.trim().toLowerCase(),
       options: {
         shouldCreateUser: true,
@@ -70,7 +76,7 @@ function SignUpForm() {
     setError(null)
     setIsLoading(true)
 
-    const { error } = await supabase.auth.verifyOtp({
+    const { error } = await getSupabase().auth.verifyOtp({
       email,
       token: otp.trim(),
       type: "email",

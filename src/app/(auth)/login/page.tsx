@@ -1,10 +1,11 @@
 "use client"
 // Needs "use client" — manages form state and calls Supabase Auth
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import type { SupabaseClient } from "@supabase/supabase-js"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,7 +15,13 @@ type Step = "email" | "otp"
 
 export default function LoginPage() {
   const router = useRouter()
-  const supabase = createClient()
+  // Lazy-init the Supabase client so it doesn't run at build/SSR time
+  // (createBrowserClient requires NEXT_PUBLIC_ vars which aren't set during build)
+  const supabaseRef = useRef<SupabaseClient | null>(null)
+  function getSupabase() {
+    if (!supabaseRef.current) supabaseRef.current = createClient()
+    return supabaseRef.current
+  }
 
   const [step, setStep] = useState<Step>("email")
   const [email, setEmail] = useState("")
@@ -28,11 +35,10 @@ export default function LoginPage() {
     setError(null)
     setIsLoading(true)
 
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error } = await getSupabase().auth.signInWithOtp({
       email: email.trim().toLowerCase(),
       options: {
-        // Don't create a new user if they don't exist — login only
-        shouldCreateUser: false,
+        shouldCreateUser: false, // Login only — don't create new users here
       },
     })
 
@@ -56,7 +62,7 @@ export default function LoginPage() {
     setError(null)
     setIsLoading(true)
 
-    const { error } = await supabase.auth.verifyOtp({
+    const { error } = await getSupabase().auth.verifyOtp({
       email,
       token: otp.trim(),
       type: "email",
@@ -69,7 +75,6 @@ export default function LoginPage() {
       return
     }
 
-    // Redirect to dashboard — middleware will handle role-based routing
     router.push("/dashboard")
     router.refresh()
   }
