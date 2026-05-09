@@ -14,10 +14,10 @@ const envSchema = z.object({
   // Database
   DATABASE_URL: z.string().min(1),
 
-  // Razorpay
-  RAZORPAY_KEY_ID: z.string().min(1).optional(),
-  RAZORPAY_KEY_SECRET: z.string().min(1).optional(),
-  NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().min(1).optional(),
+  // Razorpay — Phase 3 (skipped for MVP, using UPI direct payments)
+  // RAZORPAY_KEY_ID: z.string().min(1).optional(),
+  // RAZORPAY_KEY_SECRET: z.string().min(1).optional(),
+  // NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().min(1).optional(),
 
   // Email (Resend)
   RESEND_API_KEY: z.string().min(1).optional(),

@@ -147,8 +147,9 @@ model Sitter {
   avgRating    Float? // Computed from reviews
   totalReviews Int    @default(0)
 
-  razorpayContactId     String? // For payouts
-  razorpayFundAccountId String?
+  // UPI ID for receiving commission payments from sitter → platform
+  // Razorpay fund account fields added in future payment phase
+  upiId String? // Sitter's UPI ID (used for any refund scenarios)
 
   bookings     Booking[]
   availability SitterAvailability[]
@@ -260,13 +261,16 @@ model Booking {
 
   // Financials — all amounts in paise (1 INR = 100 paise)
   totalAmount    Int // e.g. 50000 = ₹500
-  platformFee    Int // 15% of totalAmount
+  platformFee    Int // 15% of totalAmount (collected from sitter post-visit)
   sitterEarnings Int // totalAmount - platformFee
 
-  // Payment
-  razorpayOrderId   String?  @unique
-  razorpayPaymentId String?
-  paidAt            DateTime?
+  // Payment — MVP: parent pays sitter directly via UPI before the visit.
+  // Sitter confirms receipt. Platform collects commission separately (manual transfer).
+  // Razorpay integration added in a future phase when business account is ready.
+  paymentMethod     String    @default("UPI_DIRECT") // "UPI_DIRECT" for MVP
+  paymentConfirmed  Boolean   @default(false)         // Sitter marks payment received
+  paymentConfirmedAt DateTime?
+  paymentNotes      String?                           // e.g. UPI transaction reference
 
   // Cancellation
   cancelledAt        DateTime?
@@ -368,6 +372,11 @@ model Review {
 }
 
 // ─── PAYOUTS ──────────────────────────────────────────────────────────────────
+//
+// MVP: Payouts are tracked manually. After booking completion, admin sees the
+// pending commission (15%) owed by sitter. Sitter transfers via UPI.
+// Admin marks payout as COMPLETED once received.
+// Razorpay automated transfers will replace this in a future phase.
 
 model Payout {
   id        String  @id @default(cuid())
@@ -375,14 +384,18 @@ model Payout {
   booking   Booking @relation(fields: [bookingId], references: [id])
   sitterId  String
 
-  amount Int          // In paise
+  amount Int          // Platform commission in paise (15% of booking total)
   status PayoutStatus @default(PENDING)
 
-  razorpayTransferId String?
-  initiatedAt        DateTime?
-  completedAt        DateTime?
-  failedAt           DateTime?
-  failureReason      String?
+  // MVP: manual payout tracking (UPI transfer from sitter to platform)
+  payoutMethod    String?   // "UPI" | "BANK_TRANSFER"
+  payoutReference String?   // UPI transaction ID or bank reference
+  notes           String?   // Admin notes
+
+  initiatedAt DateTime?
+  completedAt DateTime?
+  failedAt    DateTime?
+  failureReason String?
 
   createdAt DateTime @default(now())
 }
