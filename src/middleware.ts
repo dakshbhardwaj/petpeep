@@ -18,7 +18,16 @@ const PUBLIC_ROUTES = ["/", "/login", "/sign-up", "/sign-up/verify", "/login/ver
 // Routes only accessible to ADMIN users
 const ADMIN_ROUTES = ["/admin"]
 // Routes for authenticated users only
-const PROTECTED_ROUTES = ["/dashboard", "/pets", "/search", "/bookings", "/apply", "/admin"]
+const PROTECTED_ROUTES = [
+  "/dashboard",
+  "/pets",
+  "/search",
+  "/bookings",
+  "/profile",
+  "/onboarding",
+  "/sitter",
+  "/admin",
+]
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })

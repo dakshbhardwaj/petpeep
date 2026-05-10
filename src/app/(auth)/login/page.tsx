@@ -68,15 +68,33 @@ export default function LoginPage() {
       type: "email",
     })
 
-    setIsLoading(false)
-
     if (error) {
+      setIsLoading(false)
       setError("Invalid or expired code. Please try again.")
       return
     }
 
-    router.push("/dashboard")
-    router.refresh()
+    // Check user role and redirect to the right dashboard
+    try {
+      const res = await fetch("/api/auth/me")
+      const data = await res.json()
+      const userType = data?.user?.userType
+
+      if (userType === "SITTER") {
+        router.push("/sitter/dashboard")
+      } else if (userType === "ADMIN") {
+        router.push("/admin/dashboard")
+      } else {
+        router.push("/dashboard")
+      }
+      router.refresh()
+    } catch {
+      // Fallback: dashboard layout handles the redirect
+      router.push("/dashboard")
+      router.refresh()
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
