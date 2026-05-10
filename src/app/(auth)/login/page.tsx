@@ -1,7 +1,7 @@
 "use client"
 // Needs "use client" — manages form state and calls Supabase Auth
 
-import { useState, useRef } from "react"
+import { Suspense, useState, useRef } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 
 type Step = "email" | "otp"
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   // Lazy-init the Supabase client so it doesn't run at build/SSR time
@@ -184,5 +184,24 @@ export default function LoginPage() {
         </p>
       </CardContent>
     </Card>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <Card className="shadow-card">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-2xl">Welcome back</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-32 animate-pulse rounded-lg bg-muted" />
+          </CardContent>
+        </Card>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   )
 }

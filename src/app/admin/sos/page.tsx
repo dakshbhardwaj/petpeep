@@ -279,7 +279,7 @@ export default async function AdminSOSPage() {
 
                         {alert.description && (
                           <p className="text-xs text-muted-foreground line-clamp-1">
-                            "{alert.description}"
+                            &ldquo;{alert.description}&rdquo;
                           </p>
                         )}
 

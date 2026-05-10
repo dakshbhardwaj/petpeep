@@ -3,7 +3,7 @@
 // Supabase Storage uploads, and the useBookingChat realtime hook.
 
 import { useState, useEffect, useRef } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
@@ -154,7 +154,6 @@ function ChatWidget({ bookingId, currentUserId }: { bookingId: string; currentUs
 
 export default function SitterVisitPage() {
   const { id: bookingId } = useParams<{ id: string }>()
-  const router = useRouter()
 
   const [booking, setBooking] = useState<BookingDetail | null>(null)
   const [photos, setPhotos] = useState<PhotoUpdate[]>([])

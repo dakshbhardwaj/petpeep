@@ -15,8 +15,6 @@ import type { NextRequest } from "next/server"
 
 // Routes accessible without authentication
 const PUBLIC_ROUTES = ["/", "/login", "/sign-up", "/sign-up/verify", "/login/verify", "/admin-login"]
-// Routes only accessible to ADMIN users
-const ADMIN_ROUTES = ["/admin"]
 // Routes for authenticated users only
 const PROTECTED_ROUTES = [
   "/dashboard",
@@ -60,9 +58,6 @@ export async function middleware(request: NextRequest) {
 
   // Use exact match OR path prefix with a "/" to avoid "/admin" matching "/admin-login"
   const isProtectedRoute = PROTECTED_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(route + "/")
-  )
-  const isAdminRoute = ADMIN_ROUTES.some(
     (route) => pathname === route || pathname.startsWith(route + "/")
   )
   const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname === route)
