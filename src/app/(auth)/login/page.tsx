@@ -3,7 +3,7 @@
 
 import { useState, useRef } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import type { SupabaseClient } from "@supabase/supabase-js"
 import { Button } from "@/components/ui/button"
@@ -15,6 +15,7 @@ type Step = "email" | "otp"
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   // Lazy-init the Supabase client so it doesn't run at build/SSR time
   // (createBrowserClient requires NEXT_PUBLIC_ vars which aren't set during build)
   const supabaseRef = useRef<SupabaseClient | null>(null)
@@ -74,8 +75,15 @@ export default function LoginPage() {
       return
     }
 
-    // Check user role and redirect to the right dashboard
+    // Honour redirectTo param if present, otherwise route by user type
     try {
+      const redirectTo = searchParams.get("redirectTo")
+      if (redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//")) {
+        router.push(redirectTo)
+        router.refresh()
+        return
+      }
+
       const res = await fetch("/api/auth/me")
       const data = await res.json()
       const userType = data?.user?.userType
@@ -89,7 +97,6 @@ export default function LoginPage() {
       }
       router.refresh()
     } catch {
-      // Fallback: dashboard layout handles the redirect
       router.push("/dashboard")
       router.refresh()
     } finally {

@@ -14,7 +14,7 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 // Routes accessible without authentication
-const PUBLIC_ROUTES = ["/", "/login", "/sign-up", "/sign-up/verify", "/login/verify"]
+const PUBLIC_ROUTES = ["/", "/login", "/sign-up", "/sign-up/verify", "/login/verify", "/admin-login"]
 // Routes only accessible to ADMIN users
 const ADMIN_ROUTES = ["/admin"]
 // Routes for authenticated users only
@@ -58,27 +58,40 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname
 
-  // Check if this is a protected route
-  const isProtectedRoute = PROTECTED_ROUTES.some((route) => pathname.startsWith(route))
-  const isAdminRoute = ADMIN_ROUTES.some((route) => pathname.startsWith(route))
+  // Use exact match OR path prefix with a "/" to avoid "/admin" matching "/admin-login"
+  const isProtectedRoute = PROTECTED_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
+  )
+  const isAdminRoute = ADMIN_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
+  )
   const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname === route)
 
-  // Redirect unauthenticated users from protected routes
+  // Helper: build a redirect that carries the refreshed session cookies forward.
+  // Without this, any access-token refresh that happened inside getUser() is lost
+  // when a plain NextResponse.redirect() is returned, invalidating the session.
+  function redirectWithCookies(destination: URL | string): NextResponse {
+    const res = NextResponse.redirect(new URL(destination, request.url))
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      res.cookies.set(cookie.name, cookie.value, cookie)
+    })
+    return res
+  }
+
+  // Redirect unauthenticated users from protected routes to login, preserving target.
   if (isProtectedRoute && !user) {
     const loginUrl = new URL("/login", request.url)
     loginUrl.searchParams.set("redirectTo", pathname)
-    return NextResponse.redirect(loginUrl)
+    return redirectWithCookies(loginUrl)
   }
 
-  // Redirect authenticated users away from auth pages
+  // Redirect authenticated users away from auth pages.
+  // Honours the redirectTo param so deep links work after login/session refresh.
   if (isPublicRoute && user && (pathname === "/login" || pathname === "/sign-up")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url))
-  }
-
-  // For admin routes, check user type via DB — this is a rare case so it's OK to query
-  if (isAdminRoute && user) {
-    // We rely on the user's profile stored in a cookie claim or redirect to unauthorized
-    // Full admin check happens in the admin layout — middleware just prevents non-users
+    const raw = request.nextUrl.searchParams.get("redirectTo") ?? ""
+    // Only allow relative paths to prevent open-redirect attacks.
+    const destination = raw.startsWith("/") && !raw.startsWith("//") ? raw : "/dashboard"
+    return redirectWithCookies(destination)
   }
 
   return supabaseResponse

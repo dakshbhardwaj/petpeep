@@ -55,12 +55,12 @@ PetPeep is a commission-based pet care marketplace for urban India. Version 1 ta
 
 | Phase | Status | Target |
 |---|---|---|
-| Phase 0 — Foundation | Not started | Week 2 |
-| Phase 1 — Onboarding | Not started | Week 5 |
-| Phase 2 — Search | Not started | Week 7 |
-| Phase 3 — Booking | Not started | Week 10 |
-| Phase 4 — Trust Features | Not started | Week 13 |
-| Phase 5 — Launch Prep | Not started | Week 16 |
+| Phase 0 — Foundation | ✅ Complete | Week 2 |
+| Phase 1 — Onboarding | ✅ Complete | Week 5 |
+| Phase 2 — Search | ✅ Complete | Week 7 |
+| Phase 3 — Booking | ✅ Complete | Week 10 |
+| Phase 4 — Trust Features | ✅ Complete | Week 13 |
+| Phase 5 — Launch Prep | ✅ Complete | Week 16 |
 
 ---
 

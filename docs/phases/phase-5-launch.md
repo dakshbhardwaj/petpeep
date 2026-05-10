@@ -96,13 +96,13 @@
 | Chat | Real-time messages delivered within 2 seconds |
 
 **Security checklist:**
-- [ ] All API routes validate session (unauthenticated requests return 401)
-- [ ] Admin routes enforce `userType === ADMIN` (non-admin returns 403)
-- [ ] Razorpay webhook validates signature before processing
-- [ ] Aadhaar documents only accessible to uploader + admin (Supabase RLS policies)
-- [ ] No sensitive data (Aadhaar numbers, payment IDs) exposed in client-side code
-- [ ] Rate limiting on OTP endpoints (max 3 OTP requests per email per hour)
-- [ ] Input validation on all API routes (Zod schema validation)
+- [x] All API routes validate session (unauthenticated requests return 401)
+- [x] Admin routes enforce `userType === ADMIN` (non-admin returns 403)
+- [x] Razorpay webhook validates signature before processing
+- [x] Aadhaar documents only accessible to uploader + admin (Supabase RLS policies)
+- [x] No sensitive data (Aadhaar numbers, payment IDs) exposed in client-side code
+- [x] Rate limiting on OTP endpoints (max 3 OTP requests per email per hour)
+- [x] Input validation on all API routes (Zod schema validation)
 
 **Performance targets:**
 
@@ -158,9 +158,9 @@ Sentry.init({
 ## Launch Communication
 
 **Before beta launch (Week 14):**
-- [ ] Onboard 50–75 sitters in Mumbai (manual recruitment, not platform-driven yet)
-- [ ] Brief all approved sitters on the platform via email + PDF guide
-- [ ] Test support chat is staffed 8am–10pm
+- [x] Onboard 50–75 sitters in Mumbai (manual recruitment, not platform-driven yet)
+- [x] Brief all approved sitters on the platform via email + PDF guide
+- [x] Test support chat is staffed 8am–10pm
 
 **Beta invite email:**
 > Subject: You're invited to try PetPeep — Mumbai's first verified pet sitting platform

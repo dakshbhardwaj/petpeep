@@ -37,3 +37,6 @@ coverage/
 # ─── TypeScript ───────────────────────────────────────────────────────────────
 *.tsbuildinfo
 next-env.d.ts
+
+# ─── Claude Code internals ────────────────────────────────────────────────────
+.claude/worktrees/

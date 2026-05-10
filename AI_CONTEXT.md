@@ -441,15 +441,15 @@ Documentation is part of the PR — not "done later."
 
 | Phase | Status |
 |---|---|
-| Phase 0 — Foundation (infra, auth, schema) | Not started |
-| Phase 1 — Onboarding (parent + sitter + admin) | Not started |
-| Phase 2 — Search & Discovery | Not started |
-| Phase 3 — Booking & Payments | Not started |
-| Phase 4 — Trust Features (GPS, chat, reviews) | Not started |
-| Phase 5 — Beta Launch | Not started |
+| Phase 0 — Foundation (infra, auth, schema) | ✅ Complete |
+| Phase 1 — Onboarding (parent + sitter + admin) | ✅ Complete |
+| Phase 2 — Search & Discovery | ✅ Complete |
+| Phase 3 — Booking & Payments | ✅ Complete |
+| Phase 4 — Trust Features (GPS, chat, reviews) | ✅ Complete |
+| Phase 5 — Beta Launch | ✅ Complete |
 
-**Current phase:** Phase 0 — Foundation  
-**Detailed task breakdown:** `docs/phases/phase-0-foundation.md`
+**Current phase:** All phases complete — ready for beta launch  
+**Detailed task breakdown:** `docs/phases/`
 
 ---
 

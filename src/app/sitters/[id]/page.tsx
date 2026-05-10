@@ -3,14 +3,18 @@
  * Only visible for APPROVED sitters. Others get a 404.
  */
 import { notFound } from "next/navigation"
+import Link from "next/link"
 import { prisma } from "@/lib/prisma"
+import { createServerClient } from "@/lib/supabase/server"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { money } from "@/lib/money"
 import type { Metadata } from "next"
 import type { ElementType } from "react"
 import { MapPin, ShieldCheck, Star, Dog, Cat, PawPrint } from "lucide-react"
+import { BookingRequestForm } from "./_booking-request-form"
 
 interface PageProps {
   params: { id: string }
@@ -27,6 +31,39 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function SitterProfilePage({ params }: PageProps) {
+  // Check auth state (non-blocking — unauthenticated users can still view profile)
+  const supabase = createServerClient()
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser()
+
+  // Fetch parent + pets if user is logged in as a PARENT
+  let parentPets: { id: string; name: string; species: string }[] = []
+  let isLoggedIn = false
+  let isParent = false
+
+  if (authUser) {
+    isLoggedIn = true
+    const parentRecord = await prisma.petParent.findUnique({
+      where: { userId: authUser.id },
+      include: {
+        pets: {
+          where: { isActive: true },
+          select: { id: true, name: true, species: true },
+          orderBy: { name: "asc" },
+        },
+      },
+    })
+    if (parentRecord) {
+      isParent = true
+      parentPets = parentRecord.pets.map((p) => ({
+        id: p.id,
+        name: p.name,
+        species: p.species,
+      }))
+    }
+  }
+
   const sitter = await prisma.sitter.findUnique({
     where: { id: params.id },
     include: {
@@ -266,13 +303,44 @@ export default async function SitterProfilePage({ params }: PageProps) {
           </CardContent>
         </Card>
 
-        {/* CTA */}
-        <div className="rounded-2xl bg-primary/5 p-5 text-center">
-          <p className="font-semibold text-primary">Want to book {user.name.split(" ")[0]}?</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Booking requests will be available soon. Sign up to be notified.
-          </p>
-        </div>
+        {/* Booking CTA */}
+        {!isLoggedIn && (
+          <div className="rounded-2xl bg-primary/5 p-5 text-center">
+            <p className="font-semibold text-primary">Want to book {user.name.split(" ")[0]}?</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Sign in to request a booking.
+            </p>
+            <Button asChild className="mt-4 w-full">
+              <Link href="/login">Sign in to book</Link>
+            </Button>
+          </div>
+        )}
+
+        {isLoggedIn && !isParent && (
+          <div className="rounded-2xl bg-primary/5 p-5 text-center">
+            <p className="font-semibold text-primary">Want to book {user.name.split(" ")[0]}?</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Set up your pet parent profile to request a booking.
+            </p>
+          </div>
+        )}
+
+        {isLoggedIn && isParent && services.length > 0 && (
+          <BookingRequestForm
+            sitterId={sitter.id}
+            sitterFirstName={user.name.split(" ")[0]}
+            services={services.map((s) => ({
+              type: s.id === "1hr"
+                ? "DROP_IN_1HR"
+                : s.id === "2hr"
+                  ? "DROP_IN_2HR"
+                  : "DROP_IN_4HR",
+              label: s.label,
+              rate: s.rate,
+            }))}
+            pets={parentPets}
+          />
+        )}
       </div>
     </div>
   )

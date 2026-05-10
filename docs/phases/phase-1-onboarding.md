@@ -75,11 +75,11 @@ Admin logs in → Vetting Queue
 ### 1. Pet Parent Onboarding
 
 **Tasks:**
-- [ ] Create onboarding wizard (multi-step form):
+- [x] Create onboarding wizard (multi-step form):
   - Step 1: Personal details (name, city, address)
   - Step 2: Location pin (Leaflet map, click to set lat/lng)
   - Step 3: Add pet profile (see below)
-- [ ] Pet profile form fields:
+- [x] Pet profile form fields:
   - Name (text)
   - Species (Dog / Cat / Other — select)
   - Breed (text, optional)
@@ -95,8 +95,8 @@ Admin logs in → Vetting Queue
     - "Any other behavioral notes?" (text, optional)
   - Dietary notes (text, optional)
   - Medical notes + vet contact (text, optional)
-- [ ] "Add another pet" button (multiple pets per account)
-- [ ] Save to `PetParent` and `Pet` tables via Prisma
+- [x] "Add another pet" button (multiple pets per account)
+- [x] Save to `PetParent` and `Pet` tables via Prisma
 
 **Acceptance criteria:**
 - Given a new parent completes sign-up, when they try to access search without a pet, then they see a "Add your pet first" prompt
@@ -108,16 +108,16 @@ Admin logs in → Vetting Queue
 ### 2. Sitter Application Form
 
 **Tasks:**
-- [ ] Multi-step sitter application form:
+- [x] Multi-step sitter application form:
   - Step 1: Personal details
   - Step 2: Experience + references
   - Step 3: Service setup (location, radius, rates)
   - Step 4: ID document upload (Aadhaar + selfie) — store in Supabase Storage
   - Step 5: Knowledge quiz
   - Step 6: Vetting fee payment (₹299 via Razorpay)
-- [ ] Save to `SitterApplication` table; create `Sitter` record on submission
-- [ ] Set `vettingStatus = PENDING` after fee payment
-- [ ] Send confirmation email via Resend:
+- [x] Save to `SitterApplication` table; create `Sitter` record on submission
+- [x] Set `vettingStatus = PENDING` after fee payment
+- [x] Send confirmation email via Resend:
   - Subject: "Your PetPeep sitter application has been received"
   - Body: name, expected review time (48hrs), next steps
 
@@ -138,11 +138,11 @@ Admin logs in → Vetting Queue
 - Safety handling (how to break up a dog fight safely)
 
 **Implementation:**
-- [ ] Store questions in a JSON file or Supabase table
-- [ ] Randomise question order per attempt
-- [ ] Score computed on submission (backend — not client)
-- [ ] Store `quizScore`, `quizPassed`, `quizLastAttempt` on `Sitter` table
-- [ ] 7-day retry cooldown enforced server-side
+- [x] Store questions in a JSON file or Supabase table
+- [x] Randomise question order per attempt
+- [x] Score computed on submission (backend — not client)
+- [x] Store `quizScore`, `quizPassed`, `quizLastAttempt` on `Sitter` table
+- [x] 7-day retry cooldown enforced server-side
 
 **Acceptance criteria:**
 - Given a sitter scores ≥70%, when quiz is submitted, then `quizPassed = true` and they proceed to the next step
@@ -156,22 +156,22 @@ Admin logs in → Vetting Queue
 **Routes:** `/admin/vetting` (protected: `userType === ADMIN` only)
 
 **Tasks:**
-- [ ] Vetting queue table:
+- [x] Vetting queue table:
   - Columns: applicant name, city, submitted date, quiz score, ID status, action
   - Filter by status: PENDING / ID_REVIEW / APPROVED / REJECTED
   - Sort by: newest first
-- [ ] Application detail view:
+- [x] Application detail view:
   - All form fields
   - Aadhaar + selfie images (displayed securely from Supabase Storage)
   - Quiz score + pass/fail
   - Notes field for admin
   - Approve / Reject buttons
-- [ ] On Approve:
+- [x] On Approve:
   - `Sitter.vettingStatus` → APPROVED
   - `Sitter.approvedAt` → now
   - `Sitter.adminReviewedBy` → admin userId
   - Send approval email to sitter
-- [ ] On Reject:
+- [x] On Reject:
   - `Sitter.vettingStatus` → REJECTED
   - Send rejection email with notes
 

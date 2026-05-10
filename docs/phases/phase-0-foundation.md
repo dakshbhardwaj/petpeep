@@ -34,25 +34,25 @@ Do not skip deploying to Vercel in this phase.
 ### 1. Repository & Tooling Setup
 
 **Tasks:**
-- [ ] Create GitHub repository (`petpeep`)
-- [ ] Initialise Next.js 14 with App Router and TypeScript
+- [x] Create GitHub repository (`petpeep`)
+- [x] Initialise Next.js 14 with App Router and TypeScript
   ```bash
   npx create-next-app@latest petpeep --typescript --tailwind --app --src-dir --import-alias "@/*"
   ```
-- [ ] Install core dependencies:
+- [x] Install core dependencies:
   ```bash
   npm install @supabase/supabase-js @supabase/ssr @prisma/client prisma
   npm install razorpay resend
   npm install -D @types/node
   ```
-- [ ] Install shadcn/ui:
+- [x] Install shadcn/ui:
   ```bash
   npx shadcn@latest init
   ```
-- [ ] Configure ESLint + Prettier
-- [ ] Add `.gitignore` (ensure `.env.local` is excluded)
-- [ ] Add `.env.example` (see [Environment Setup](../04-environment-setup.md))
-- [ ] Create `CLAUDE.md` with project context for AI assistants
+- [x] Configure ESLint + Prettier
+- [x] Add `.gitignore` (ensure `.env.local` is excluded)
+- [x] Add `.env.example` (see [Environment Setup](../04-environment-setup.md))
+- [x] Create `CLAUDE.md` with project context for AI assistants
 
 **Acceptance criteria:**
 - `npm run dev` starts successfully with no errors
@@ -64,7 +64,7 @@ Do not skip deploying to Vercel in this phase.
 ### 2. Design System Configuration
 
 **Tasks:**
-- [ ] Configure Tailwind with PetPeep design tokens in `tailwind.config.ts`:
+- [x] Configure Tailwind with PetPeep design tokens in `tailwind.config.ts`:
 
 ```typescript
 // tailwind.config.ts
@@ -112,12 +112,12 @@ const config: Config = {
 export default config;
 ```
 
-- [ ] Add Google Fonts (Quicksand + Inter) in `src/app/layout.tsx`
-- [ ] Install and configure core shadcn/ui components:
+- [x] Add Google Fonts (Quicksand + Inter) in `src/app/layout.tsx`
+- [x] Install and configure core shadcn/ui components:
   ```bash
   npx shadcn@latest add button input label card badge avatar toast dialog
   ```
-- [ ] Create base layout components: `Header`, `Footer`, `Container`
+- [x] Create base layout components: `Header`, `Footer`, `Container`
 
 **Acceptance criteria:**
 - Landing page renders in Caring Teal with Quicksand headings
@@ -128,9 +128,9 @@ export default config;
 ### 3. Supabase + Prisma Setup
 
 **Tasks:**
-- [ ] Create Supabase project at [supabase.com](https://supabase.com)
-- [ ] Create Prisma schema (full schema in [Data Model](../02-data-model.md))
-- [ ] Create `src/lib/prisma.ts` — Prisma client singleton:
+- [x] Create Supabase project at [supabase.com](https://supabase.com)
+- [x] Create Prisma schema (full schema in [Data Model](../02-data-model.md))
+- [x] Create `src/lib/prisma.ts` — Prisma client singleton:
 
 ```typescript
 // src/lib/prisma.ts
@@ -149,11 +149,11 @@ export const prisma =
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 ```
 
-- [ ] Create Supabase clients:
+- [x] Create Supabase clients:
   - `src/lib/supabase/client.ts` — for browser use
   - `src/lib/supabase/server.ts` — for server components and API routes
-- [ ] Run `npx prisma db push` to create all tables in Supabase
-- [ ] Verify all tables created in Supabase Table Editor
+- [x] Run `npx prisma db push` to create all tables in Supabase
+- [x] Verify all tables created in Supabase Table Editor
 
 **Acceptance criteria:**
 - `npx prisma studio` opens and shows all empty tables
@@ -164,20 +164,20 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 ### 4. Authentication — Email OTP
 
 **Tasks:**
-- [ ] Enable Email provider in Supabase Auth settings
-- [ ] Create sign-up page (`/sign-up`):
+- [x] Enable Email provider in Supabase Auth settings
+- [x] Create sign-up page (`/sign-up`):
   - Email input → OTP sent via Supabase Auth
   - OTP verification step
   - Name input after OTP verified
   - Redirect to onboarding based on user type selection (Parent / Sitter)
-- [ ] Create login page (`/login`):
+- [x] Create login page (`/login`):
   - Email input → OTP sent
   - OTP verification → redirect to dashboard
-- [ ] Create auth middleware (`src/middleware.ts`):
+- [x] Create auth middleware (`src/middleware.ts`):
   - Protected routes redirect to `/login` if not authenticated
   - Admin routes check `userType === ADMIN`
-- [ ] Create `useAuth` hook for client-side auth state
-- [ ] Create user record in `User` table on first sign-up (via Supabase Auth webhook or API route)
+- [x] Create `useAuth` hook for client-side auth state
+- [x] Create user record in `User` table on first sign-up (via Supabase Auth webhook or API route)
 
 **Acceptance criteria:**
 - Given a new email, when OTP is entered correctly, then a User record is created in the database and user is redirected to onboarding
@@ -190,14 +190,14 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 ### 5. Landing Page
 
 **Tasks:**
-- [ ] Build the landing page (`/`):
+- [x] Build the landing page (`/`):
   - Hero: headline, sub-headline, "Find a Sitter" CTA
   - How It Works (3 steps for parents)
   - Trust signals (verified badge count, review count, cities covered)
   - Sitter CTA ("Become a Sitter")
   - Footer (links, city info)
-- [ ] Fully responsive (mobile + desktop)
-- [ ] Match design system (Caring Teal, Quicksand headlines)
+- [x] Fully responsive (mobile + desktop)
+- [x] Match design system (Caring Teal, Quicksand headlines)
 
 **Acceptance criteria:**
 - Renders correctly on Chrome, Safari, Firefox
@@ -209,11 +209,11 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 ### 6. Deployment to Vercel
 
 **Tasks:**
-- [ ] Connect GitHub repo to Vercel
-- [ ] Configure environment variables in Vercel dashboard
-- [ ] Set up custom domain (petpeep.in or staging.petpeep.in)
-- [ ] Verify deployment works on every push to `main`
-- [ ] Test auth flow on production URL (not just localhost)
+- [x] Connect GitHub repo to Vercel
+- [x] Configure environment variables in Vercel dashboard
+- [x] Set up custom domain (petpeep.in or staging.petpeep.in)
+- [x] Verify deployment works on every push to `main`
+- [x] Test auth flow on production URL (not just localhost)
 
 **Acceptance criteria:**
 - Pushing to `main` triggers automatic deployment
